@@ -25,21 +25,21 @@ int neoPixelPin = 0;//Change the pin numbers according to your board
 
 int numPixels = 8; //Change it according to the number of pixels in your neopixel
 // Instatiate the NeoPixel from the ibrary
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(numPixels, neoPixelPin, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(numPixels,neoPixelPin,NEO_GRB+NEO_KHZ800);
 
 //Starting pixels for the Google's 4 colours
-int start1 = 0;
-int start2 = 2;
-int start3 = 4;
-int start4 = 6;
+int start1=0;
+int start2=2;
+int start3=4;
+int start4=6;
 
-int brightness = 150;
-int brightDirection = -15;
+int brightness=150;
+int brightDirection=-15;
 #define DELAY_TIME (50)
 
 unsigned long startTime;
 
-void setup() {
+void setup(){
   Serial.begin(9600);
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
@@ -54,45 +54,41 @@ void loop(){
     switch(incomingByte){
     case 0x01:
       delay(10);
-        if(startTime + DELAY_TIME < millis()){
+      if(startTime + DELAY_TIME < millis()){
         activateblink();
         startTime = millis();
       }
-    break;
+      break;
     case 0x02:
-    delay(10);
+      delay(10);
       if(startTime + DELAY_TIME < millis()){
         activatecircle();
         startTime = millis();
       }
-    break;
-    default : 
+      break;
+    default: 
       allOff();
     }        
   }
 }
 
 
-void allOff() {
-  for ( int i = 0; i < numPixels; i++ ) {
-    strip.setPixelColor(i, 0, 0, 0 );
-  }
+void allOff(){
+  for(int i=0; i<numPixels; i++){strip.setPixelColor(i,0x000000);}
   strip.show();
 }
-//Circling effect
-void activatecircle() {
-  adjustStarts();
 
+//Circling effect
+void activatecircle(){
+  adjustStarts();
   // first 20 pixels = color set #1
-  for ( int i = start1; i < start1 + 1; i++ ) {
+  for(int i=start1;i<start1+1;i++){
     strip.setPixelColor(i, 23, 107, 239 );
   }
-
   // next 20 pixels = color set #2
   for ( int i = start2; i < start2 + 1 ; i++ ) {
     strip.setPixelColor(i, 255, 62, 48 );
   }
-
   // last 20 pixels = color set #3
   for ( int i = start3; i < start3 + 1; i++ ) {
     strip.setPixelColor(i, 247, 181, 41 );
@@ -100,73 +96,61 @@ void activatecircle() {
   for ( int i = start4; i < start4 + 1; i++ ) {
     strip.setPixelColor(i, 23, 156, 82 );
   }
-
   strip.show();
 }
-//Blinking Effect. The RGB Colours are based on the Google's Logo
-void activateblink() {
 
+//Blinking Effect. The RGB Colours are based on the Google's Logo
+void activateblink(){
   for ( int i = start1; i < start1 + 1; i++ ) {
     strip.setPixelColor(i, 23, 107, 239 );
     strip.setBrightness(brightness);
     strip.show();
-
     adjustBrightness();
   }
-
   for ( int i = start2; i < start2 + 1 ; i++ ) {
     strip.setPixelColor(i, 255, 62, 48 );
     strip.setBrightness(brightness);
     strip.show();
-
     adjustBrightness();
   }
-
   for ( int i = start3; i < start3 + 1; i++ ) {
     strip.setPixelColor(i, 247, 181, 41 );
     strip.setBrightness(brightness);
     strip.show();
-
     adjustBrightness();
   }
   for ( int i = start4; i < start4 + 1; i++ ) {
     strip.setPixelColor(i, 23, 156, 82 );
     strip.setBrightness(brightness);
     strip.show();
-
     adjustBrightness();
   }
-
   strip.show();
 }
 
-void adjustStarts() {
+void adjustStarts(){
   start1 = incrementStart(start1);
   start2 = incrementStart(start2);
   start3 = incrementStart(start3);
   start4 = incrementStart(start4);
 }
 
-
-int incrementStart(int startValue) {
-  startValue = startValue + 1;
-  if ( startValue == 12 )//Change it according to the number of pixels in your neopixel
-    startValue = 0;
-
+int incrementStart(int startValue){
+  (startValue == numPixels) ? 0 : startValue++;
   return startValue;
 }
 
-void adjustBrightness() {
+void adjustBrightness(){
   brightness = brightness + brightDirection;
-  if ( brightness < 0 ) {
+  if(brightness < 0){
     brightness = 0;
     brightDirection = -brightDirection;
   }
-  else if ( brightness > 255 ) {
+  else if(brightness > 255){
     brightness = 255;
     brightDirection = -brightDirection;
   }
 
   // output the serial
-  Serial.println( brightness );
+  Serial.println(brightness);
 }
