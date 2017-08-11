@@ -39,9 +39,6 @@ ser = serial.Serial(
     dsrdtr=False
 )
 
-ser.open()
-ser.isOpen()
-
 def process_event(event):
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         ser.write(bytes([0x01]))
@@ -58,6 +55,8 @@ def process_event(event):
 
 
 def main():
+    ser.open()
+    ser.isOpen()
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('--credentials', type=existing_file,
