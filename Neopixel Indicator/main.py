@@ -56,7 +56,7 @@ def process_event(event):
 
 def main():
     ser.open()
-    ser.isOpen()
+    # MAYBE IT HAVE TO CHECK ser.isOpen() BUT NOT NOW
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('--credentials', type=existing_file,
