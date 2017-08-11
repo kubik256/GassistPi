@@ -66,6 +66,9 @@ void loop(){
         startTime = millis();
       }
       break;
+    case 0x03:
+      delay(10);
+      knightRider(64, 3, 0x176BEF);
     default: 
       allOff();
     }        
@@ -155,21 +158,22 @@ void adjustBrightness(){
   Serial.println(brightness);
 }
 
-void knightRider(uint16_t cycles, uint16_t speed, uint8_t width, uint32_t color) {
+uint32_t dimColor(uint32_t color, uint8_t width) {
+   return (((color&0xFF0000)/width)&0xFF0000) + (((color&0x00FF00)/width)&0x00FF00) + (((color&0x0000FF)/width)&0x0000FF);
+}
+
+void knightRider(uint16_t speed, uint8_t width, uint32_t color) {
   uint32_t old_val[numPixels];
-  // Larson time baby!
-  for(int i = 0; i < cycles; i++){
-    for (int count = numPixels-1; count>=0; count--) {
-      strip.setPixelColor(count, color);
-      old_val[count] = color;
-      for(int x = count; x<=numPixels ;x++) {
-        old_val[x-1] = dimColor(old_val[x-1], width);
-        strip.setPixelColor(x+1, old_val[x+1]);
-      }
-      strip.setBrightness(brightness);
-      strip.show();
-      adjustBrightness();
-      delay(speed);
+  for (int count = numPixels-1; count>=0; count--) {
+    strip.setPixelColor(count, color);
+    old_val[count] = color;
+    for(int x = count; x<=numPixels ;x++) {
+      old_val[x-1] = dimColor(old_val[x-1], width);
+      strip.setPixelColor(x+1, old_val[x+1]);
     }
+    strip.setBrightness(brightness);
+    strip.show();
+    adjustBrightness();
+    delay(speed);
   }
 }
