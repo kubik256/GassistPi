@@ -17,13 +17,7 @@
 
 from __future__ import print_function
 
-
-import RPi.GPIO as GPIO
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-GPIO.setup(24,GPIO.OUT)
-GPIO.setup(27,GPIO.OUT)
-
+import serial
 import argparse
 import os.path
 import json
@@ -34,34 +28,32 @@ from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 
+ser = serial.Serial(
+    port='/dev/ttyUSB0',  #NEED TO BE CHANGED!!!!!!!!!! ......... BASED ON lsusb
+    baudrate=1200,
+    parity=serial.PARITY_NONE,
+    stopbits=serial.STOPBITS_ONE,
+    bytesize=serial.EIGHTBITS,
+    xonxoff=serial.XOFF,
+    rtscts=False,
+    dsrdtr=False
+)
+
+ser.open()
+ser.isOpen()
 
 def process_event(event):
-    """Pretty prints events.
-
-    Prints all events that occur with two spaces between each new
-    conversation and a single space between turns of a conversation.
-
-    Args:
-        event(event.Event): The current event to process.
-    """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
-        print()
-        GPIO.output(24,GPIO.HIGH)
-
+        ser.write(bytes([0x01]))
     if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
-       GPIO.output(24,GPIO.LOW)
-       GPIO.output(27,GPIO.HIGH)
-
+       ser.write(bytes([0x02]))
     if event.type == EventType.ON_RESPONDING_FINISHED:
-       GPIO.output(27,GPIO.LOW)
-       GPIO.output(24,GPIO.HIGH)
-
-
+       ser.write(bytes([0x03]))
     print(event)
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
-        GPIO.output(24,GPIO.LOW)
+        ser.write(bytes([0x04]))
         print()
 
 
