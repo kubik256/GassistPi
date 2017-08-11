@@ -30,7 +30,7 @@ from google.assistant.library.file_helpers import existing_file
 
 ser = serial.Serial(
     port='/dev/ttyUSB0',  #NEED TO BE CHANGED!!!!!!!!!! ......... BASED ON lsusb
-    baudrate=1200,
+    baudrate=9600,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
     bytesize=serial.EIGHTBITS,
