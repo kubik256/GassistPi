@@ -2,6 +2,8 @@
   Scripted by Sid for Sid's E Classroom
   https://www.youtube.com/c/SidsEClassroom
 
+  Modified by Kubik256 for using DigiSpark via USB ;)
+  
   ---------------------------------------------------------------------------------------------------------
   NeoPixel Information for initializing the strip, below
   60ma/pixel for current load
@@ -16,21 +18,20 @@
 **********************************************************************************************************/
 
 #include <Adafruit_NeoPixel.h>
+#include <Serial.h>
 
 // the data pin for the NeoPixels
-int neoPixelPin = D4;//Change the pin numbers according to your board
+int neoPixelPin = 0;//Change the pin numbers according to your board
 
-int numPixels = 12; //Change it according to the number of pixels in your neopixel
-#define BUTTON_PIN1   D2 //Change the pin numbers according to your board
-#define BUTTON_PIN2   D3 //Change the pin numbers according to your board
+int numPixels = 8; //Change it according to the number of pixels in your neopixel
 // Instatiate the NeoPixel from the ibrary
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(numPixels, neoPixelPin, NEO_GRB + NEO_KHZ800);
 
 //Starting pixels for the Google's 4 colours
-int start1 = 0; // Same value for Neopixels of all sizes
-int start2 = 3; // 2 for 8 neopixel ring, 6 for 24 neopixel ring and so on
-int start3 = 6; // 4 for 8 neopixel ring, 12 for 24 neopixel ring and so on
-int start4 = 9; // 6 for 8 neopixel ring, 18 for 24 neopixel ring and so on
+int start1 = 0;
+int start2 = 2;
+int start3 = 4;
+int start4 = 6;
 
 int brightness = 150;
 int brightDirection = -15;
@@ -39,8 +40,7 @@ int brightDirection = -15;
 unsigned long startTime;
 
 void setup() {
-  pinMode(BUTTON_PIN1, INPUT);
-  pinMode(BUTTON_PIN2, INPUT);
+  Serial.begin(9600);
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
   startTime = millis();
@@ -48,30 +48,28 @@ void setup() {
   activateblink();
 }
 
-void loop() {
-  bool but1 = digitalRead(BUTTON_PIN1);
-  bool but2 = digitalRead(BUTTON_PIN2);
-  if (but1 == HIGH) {
-    // Short delay to debounce button.
+void loop(){
+  if(Serial.available() > 0){
+    incomingByte = Serial.read();
+    switch(incomingByte){
+    case 0x01:
+      delay(10);
+        if(startTime + DELAY_TIME < millis()){
+        activateblink();
+        startTime = millis();
+      }
+    break;
+    case 0x02:
     delay(10);
-    if ( startTime + DELAY_TIME < millis() ) {
-      activateblink();
-      startTime = millis();
-
-    }
-
+      if(startTime + DELAY_TIME < millis()){
+        activatecircle();
+        startTime = millis();
+      }
+    break;
+    default : 
+      allOff();
+    }        
   }
-  else if (but2 == HIGH) {
-    delay(10);
-    if ( startTime + DELAY_TIME < millis() ) {
-      activatecircle();
-      startTime = millis();
-    }
-  }
-  else {
-    allOff();
-  }
-
 }
 
 
@@ -85,21 +83,20 @@ void allOff() {
 void activatecircle() {
   adjustStarts();
 
- // first 3 pixels = color set #1
+  // first 20 pixels = color set #1
   for ( int i = start1; i < start1 + 1; i++ ) {
     strip.setPixelColor(i, 23, 107, 239 );
   }
 
-  // next 3 pixels = color set #2
+  // next 20 pixels = color set #2
   for ( int i = start2; i < start2 + 1 ; i++ ) {
     strip.setPixelColor(i, 255, 62, 48 );
   }
 
-  // next 3 pixels = color set #3
+  // last 20 pixels = color set #3
   for ( int i = start3; i < start3 + 1; i++ ) {
     strip.setPixelColor(i, 247, 181, 41 );
   }
-  // last 3 pixels = color set #3
   for ( int i = start4; i < start4 + 1; i++ ) {
     strip.setPixelColor(i, 23, 156, 82 );
   }
@@ -173,4 +170,3 @@ void adjustBrightness() {
   // output the serial
   Serial.println( brightness );
 }
-
