@@ -2,15 +2,14 @@
 
 `/etc/systemd/system/google-assistant-demo.service`
 
-## Reload daemon
+``bash
+sudo chown root:root /etc/systemd/system/google-assistant-demo.service
+sudo chmod 644 /etc/systemd/system/google-assistant-demo.service
+``
 
-`systemctl daemon-reload`
+## Inicialize startup service
 
-## Start GA service
-`systemctl start google-assistant`
-
-## Check service status for errors
-`systemctl status google-assistant`
-
-## Enable service startup
-`systemctl enable google-assistant`
+``bash
+sudo systemctl enable google-assistant-demo.service
+sudo systemctl start google-assistant-demo.service
+``
