@@ -30,7 +30,7 @@ from google.assistant.library.file_helpers import existing_file
 
 ser = serial.Serial(
     port='/dev/ttyUSB0',  #NEED TO BE CHANGED!!!!!!!!!! ......... BASED ON lsusb
-    baudrate=9600,
+    baudrate=4800,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
     bytesize=serial.EIGHTBITS,
@@ -47,11 +47,8 @@ def process_event(event):
     if event.type == EventType.ON_RESPONDING_FINISHED:
        ser.write(bytes([0x03]))
     print(event)
-
-    if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
-            event.args and not event.args['with_follow_on_turn']):
+    if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and event.args and not event.args['with_follow_on_turn']):
         ser.write(bytes([0x04]))
-        print()
 
 
 def main():
