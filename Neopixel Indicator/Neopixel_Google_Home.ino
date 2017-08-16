@@ -2,7 +2,7 @@
   Scripted by Sid for Sid's E Classroom
   https://www.youtube.com/c/SidsEClassroom
 
-  Modified by Kubik256 for using LilyPad via USB ;)
+  Modified by Kubik256 for using LilyPad Arduino USB controlled via USB ;)
   
   ---------------------------------------------------------------------------------------------------------
   NeoPixel Information for initializing the strip, below
