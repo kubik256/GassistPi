@@ -18,7 +18,7 @@
 **********************************************************************************************************/
 
 #include <Adafruit_NeoPixel.h>
-#include <Serial.h>
+#include <SoftwareSerial.h>
 
 // the data pin for the NeoPixels
 int neoPixelPin = 0;//Change the pin numbers according to your board
@@ -40,7 +40,7 @@ int brightDirection=-15;
 unsigned long startTime;
 
 void setup(){
-  Serial.begin(9600);
+  Serial.begin(4800);
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
   startTime = millis();
