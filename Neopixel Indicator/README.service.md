@@ -1,16 +1,16 @@
-# - Save google-assistant-demo.service file into system folder
+## Save google-assistant-demo.service file into system folder
 
 `/etc/systemd/system/google-assistant-demo.service`
 
-# - Reload daemon
+## Reload daemon
 
 `systemctl daemon-reload`
 
-# - Start GA service
+## Start GA service
 `systemctl start google-assistant`
 
-# - Check service status for errors
+## Check service status for errors
 `systemctl status google-assistant`
 
-# - Enable service startup
+## Enable service startup
 `systemctl enable google-assistant`
